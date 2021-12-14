@@ -22,9 +22,11 @@ def drugs_to_pmids_mapping(
         title = preprocess(article.title)
         abstract = preprocess(article.abstract)
         for drug_row in drugs.itertuples():
-            drug = preprocess(drug_row.drug)
-            if drug in title or drug in abstract:
-                drugs_to_pmids[drug].append(article.pmid)
+            main_drug_name = preprocess(drug_row.drug)
+            synonyms = [x.strip() for x in preprocess(drug_row.synonyms).split(",")]
+            all_drug_names = [main_drug_name] + synonyms
+            if any(drug in title or drug in abstract for drug in all_drug_names):
+                drugs_to_pmids[main_drug_name].append(article.pmid)
     return drugs_to_pmids
 
 
@@ -49,12 +51,18 @@ if __name__ == "__main__":
     # Load literature sheet
     with open(args.pmids, "rb") as f:
         literature = pd.read_excel(
-            f, usecols="A:D", names=["pmid", "year", "title", "abstract"], dtype=str
+            f,
+            usecols="A:D",
+            skiprows=[0],
+            names=["pmid", "year", "title", "abstract"],
+            dtype=str,
         ).fillna("")
 
     # Load drugs sheet
     with open(args.relevant_drugs, "rb") as f:
-        drugs = pd.read_excel(f, names=["id", "drug"], dtype=str)
+        drugs = pd.read_excel(
+            f, usecols="A:C", skiprows=[0], names=["id", "drug", "synonyms"], dtype=str
+        ).fillna("")
 
     # Map PMIDs to drugs
     drugs_to_pmids = drugs_to_pmids_mapping(literature, drugs)

@@ -25,10 +25,27 @@ For more info on the arguments, run `python find_drugs.py --help`.
 | - | - | - | - |
 | pmid | year | title | abstract |
 
-### `drugs.xlsx`
-| A | B |
-| - | - |
-| id | drug |
+Examples of fields:
 
-Synonyms will also be included in this file, still determining what the
-formatting should be.
+| pmid | 24936338 |
+| year | 2014 |
+| title | Modeling the time dependent biodistribution of Samarium-153 ethylenediamine tetramethylene phosphonate using compartmental analysis |
+| abstract | AIM: The main purpose of this work was to develop a pharmacokinetic model for the bone pain palliation agent Samarium-153 ethylenediamine tetramethylene phosphonate ([(153)Sm]-EDTMP) in normal rats to analyze the behavior of the complex. BACKGROUND: The use of compartmental analysis allows a mathematical separation of tissues and organs to determine the concentration of activity in each fraction of interest. Biodistribution studies are expensive and difficult to carry out in humans, but such data can be obtained easily in rodents. MATERIALS AND METHODS: We have developed a physiologically based pharmacokinetic model for scaling up activity concentration in each organ versus time. The mathematical model uses physiological parameters including organ volumes, blood flow rates, and vascular permabilities; the compartments (organs) are connected anatomically. This allows the use of scale-up techniques to predict new complex distribution in humans in each organ. RESULTS: The concentration of the radiopharmaceutical in various organs was measured at different times. The temporal behavior of biodistribution of (153)Sm-EDTMP was modeled and drawn as a function of time. CONCLUSIONS: The variation of pharmaceutical concentration in all organs is described with summation of 6-10 exponential terms and it approximates our experimental data with precision better than 2%. |
+
+The first row in this sheet should contain column headers (e.g. "PMID", "Title"
+...) and will be skipped during loading.
+
+### `drugs.xlsx`
+| A | B | C |
+| - | - | - |
+| id | drug | synonyms |
+
+Examples of fields:
+
+| id | 0 |
+| drug | midazolam |
+| synonyms | Dormicum,Hypnovel,Versed |
+
+Synonyms should be a comma-separated list of alternate names for `drug`. Again,
+the first row in the sheet should contain column headers and will be skipped
+during loading.
