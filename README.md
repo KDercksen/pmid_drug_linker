@@ -19,6 +19,8 @@ python find_drugs.py
 
 For more info on the arguments, run `python find_drugs.py --help`.
 
+---
+
 ## Sheet format
 ### `literature.xlsx`
 | A | B | C | D |
@@ -27,6 +29,8 @@ For more info on the arguments, run `python find_drugs.py --help`.
 
 Examples of fields:
 
+| field | content |
+| ----- | ------- |
 | pmid | 24936338 |
 | year | 2014 |
 | title | Modeling the time dependent biodistribution of Samarium-153 ethylenediamine tetramethylene phosphonate using compartmental analysis |
@@ -42,6 +46,8 @@ The first row in this sheet should contain column headers (e.g. "PMID", "Title"
 
 Examples of fields:
 
+| field | content |
+| ----- | ------- |
 | id | 0 |
 | drug | midazolam |
 | synonyms | Dormicum,Hypnovel,Versed |
