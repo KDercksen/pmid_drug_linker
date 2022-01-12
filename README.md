@@ -40,9 +40,9 @@ The first row in this sheet should contain column headers (e.g. "PMID", "Title"
 ...) and will be skipped during loading.
 
 ### `drugs.xlsx`
-| A | B | C |
-| - | - | - |
-| id | drug | synonyms |
+| A | B | C | D | E |
+| - | - | - | - | - |
+| id | drug | synonym 0 | synonym ... | synonym N |
 
 Examples of fields:
 
@@ -50,8 +50,11 @@ Examples of fields:
 | ----- | ------- |
 | id | 0 |
 | drug | midazolam |
-| synonyms | Dormicum,Hypnovel,Versed |
+| synonym 0 | Dormicum |
+| synonym 1 | Versed |
+| ... | ... |
 
-Synonyms should be a comma-separated list of alternate names for `drug`. Again,
-the first row in the sheet should contain column headers and will be skipped
-during loading.
+Synonyms should be alternate names for `drug`, one per column. **The default
+for maximum number of synonyms is 4, you can use `--num-synonyms N` to use less
+or more**. Again, the first row in the sheet should contain column headers and
+will be skipped during loading.
