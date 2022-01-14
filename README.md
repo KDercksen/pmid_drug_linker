@@ -4,17 +4,35 @@ Drugs to PMIDs linker
 ## Installation
 Install [Python](https://www.python.org) and the required libraries:
 ```python
-pip install pandas tqdm
+pip install pandas tqdm [pytest]
 ```
 (or use Anaconda to do this).
 
 ## Usage
-Open a command prompt and run the following command:
+The tool has two main options, `create` and `update`.
+
+### `create`
+This command is used to create a new dataset with pmid -> drug links. Open a
+command prompt and run the following command:
 ```python
-python find_drugs.py
+python pmid_drug_linker.py create
     --pmids literature.xlsx
     --relevant-drugs drugs.xlsx
     --output pmid_drug_mapping.csv
+```
+
+### `update`
+This command is used to generate a new dataset as well as a changelog given a
+previous dataset.  Mainly useful to e.g. update a dataset with some new
+literature or drugs, and having the difference in a separate file.
+
+```python
+python pmid_drug_linker.py update
+    --pmids literature.xlsx
+    --relevant-drugs drugs.xlsx
+    --old-dataset pmid_drug_mapping.csv  # output from a previous "create" run
+    --changelog-path pmid_drug_mapping_changelog.csv  # where to write difference between pmid_drug_mapping.csv and pmid_drug_mapping_new.csv
+    --output pmid_drug_mapping_new.csv  # new dataset (what you would get from "create" run)
 ```
 
 For more info on the arguments, run `python find_drugs.py --help`.
@@ -58,3 +76,7 @@ Synonyms should be alternate names for `drug`, one per column. **The default
 for maximum number of synonyms is 4, you can use `--num-synonyms N` to use less
 or more**. Again, the first row in the sheet should contain column headers and
 will be skipped during loading.
+
+
+## Testing
+Use `pytest` command to run the tests (as far as there are any :-)).
