@@ -6,7 +6,7 @@ Drugs to PMIDs linker
 ## Installation
 Install [Python](https://www.python.org) and the required libraries:
 ```python
-pip install pandas tqdm [pytest]
+pip install -r requirements.txt
 ```
 (or use Anaconda to do this).
 
