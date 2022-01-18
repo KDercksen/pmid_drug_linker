@@ -31,7 +31,9 @@ class TestDiffableMapping:
             {"drug1": ["id1", "id2", "id3"], "drug2": ["id1", "id2", "id3"]}
         )
         added_diff = new.difference(base)
+        not_added_diff = base.difference(new)
         assert added_diff["drug1"] == [] and added_diff["drug2"] == ["id3"]
+        assert not_added_diff["drug1"] == [] and not_added_diff["drug2"] == []
 
 
 class TestIOFunctions:
@@ -60,6 +62,7 @@ class TestIOFunctions:
         )
         test_map = DiffableMapping(csv_to_mapping(self.mapping_csv_path))
         assert all(x == [] for x in test_map.difference(expected).values())
+        assert all(x == [] for x in expected.difference(test_map).values())
 
     def test_load_literature_xlsx(self):
         sheet = load_literature_xlsx(self.literature_sheet_path)
@@ -83,3 +86,4 @@ class TestIOFunctions:
         processed_drugs = process_drugs_sheet(drugs, 0)
         test_map = DiffableMapping(drugs_to_pmids_mapping(pmids, processed_drugs))
         assert all(x == [] for x in test_map.difference(expected).values())
+        assert all(x == [] for x in expected.difference(test_map).values())
