@@ -1,3 +1,5 @@
+![Continuous integration tests](https://github.com/KDercksen/pmid_drug_linker/actions/workflows/ci.yml/badge.svg)
+
 Drugs to PMIDs linker
 =====================
 
