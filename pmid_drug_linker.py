@@ -43,7 +43,7 @@ def mapping_to_csv(mapping: Dict[str, List[str]], output: Path):
     result = pd.DataFrame.from_records(
         [(k, ",".join(v)) for k, v in mapping.items() if len(v) > 0]
     )
-    result.to_csv(output)
+    result.to_csv(output, index=False, header=False)
 
 
 def preprocess(text: str) -> str:
@@ -75,7 +75,7 @@ def drugs_to_pmids_mapping(
     return drugs_to_pmids
 
 
-def make_args():
+def add_base_args(parser: argparse.ArgumentParser):
     pmids_help_str = """Excel file with PubMed IDs, titles and abstracts.
     The expected format is: column A = PMID, column B = year, column C = title,
     column D = abstract.
@@ -85,38 +85,40 @@ def make_args():
     column C and onwards = synonyms for drug in column B
     """
 
-    p = argparse.ArgumentParser("Link PMIDs to drugs")
-
     # all this stuff is needed for both create and update actions
-    p.add_argument("--pmids", type=Path, required=True, help=pmids_help_str)
-    p.add_argument(
+    parser.add_argument("--pmids", type=Path, required=True, help=pmids_help_str)
+    parser.add_argument(
         "--relevant-drugs", type=Path, required=True, help=relevant_drugs_help_str
     )
-    p.add_argument("--output", type=Path, required=True, help="File to write results")
-    p.add_argument(
+    parser.add_argument(
+        "--output", type=Path, required=True, help="File to write results"
+    )
+    parser.add_argument(
         "--num-synonyms",
         type=int,
         default=4,
         help="Number of drug synonym columns to load from drugs sheet",
     )
 
+
+def make_args() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser("Link PMIDs to drugs")
+
     # subcommands creation below
     subparsers = p.add_subparsers(title="commands", dest="command", required=True)
     # arguments for the 'create' command
     create_parser = subparsers.add_parser(  # noqa
         "create",
-        add_help=False,
         description="create mapping",
-        parents=[p],
     )
+    add_base_args(create_parser)
 
     # arguments for the update command
     update_parser = subparsers.add_parser(
         "update",
-        add_help=False,
         description="update existing mapping",
-        parents=[p],
     )
+    add_base_args(update_parser)
     update_parser.add_argument("--old-dataset", type=Path, required=True)
     update_parser.add_argument("--changelog-path", type=Path, required=True)
 
@@ -124,29 +126,25 @@ def make_args():
 
 
 def load_literature_xlsx(path: Path) -> pd.DataFrame:
-    with open(path, "rb") as f:
-        literature = pd.read_excel(
-            f,
-            usecols=range(4),
-            skiprows=[0],
-            names=["pmid", "year", "title", "abstract"],
-            header=None,
-            dtype=str,
-        ).fillna("")
-    return literature
+    return pd.read_excel(
+        path,
+        usecols=range(4),
+        skiprows=[0],
+        names=["pmid", "year", "title", "abstract"],
+        header=None,
+        dtype=str,
+    ).fillna("")
 
 
-def load_drugs_xlsx(path: Path, num_synonyms: int) -> Dict[str, List[str]]:
-    with open(args.relevant_drugs, "rb") as f:
-        drugs = pd.read_excel(
-            f,
-            usecols=range(2 + args.num_synonyms),
-            skiprows=[0],
-            names=["id", "drug"] + [f"synonym{i}" for i in range(args.num_synonyms)],
-            header=None,
-            dtype=str,
-        ).fillna("")
-    return process_drugs_sheet(drugs, num_synonyms)
+def load_drugs_xlsx(path: Path, num_synonyms: int) -> pd.DataFrame:
+    return pd.read_excel(
+        path,
+        usecols=range(2 + num_synonyms),
+        skiprows=[0],
+        names=["id", "drug"] + [f"synonym{i}" for i in range(num_synonyms)],
+        header=None,
+        dtype=str,
+    ).fillna("")
 
 
 if __name__ == "__main__":
@@ -154,10 +152,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Load literature sheet
-    literature = load_literature_xlsx(args.literature)
+    literature = load_literature_xlsx(args.pmids)
 
     # Load drugs sheet and process it to a mapping
-    drugs = load_drugs_xlsx(args.drugs, args.num_synonyms)
+    drugs = process_drugs_sheet(
+        load_drugs_xlsx(args.relevant_drugs, args.num_synonyms), args.num_synonyms
+    )
 
     # Map PMIDs to drugs
     drugs_to_pmids = drugs_to_pmids_mapping(literature, drugs)

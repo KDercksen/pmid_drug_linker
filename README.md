@@ -40,6 +40,9 @@ For more info on the arguments, run `python find_drugs.py --help`.
 ---
 
 ## Sheet format
+Example sheets are included in the `resources` folder, these are also used for
+running tests.
+
 ### `literature.xlsx`
 | A | B | C | D |
 | - | - | - | - |
