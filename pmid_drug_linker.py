@@ -47,7 +47,7 @@ def mapping_to_csv(mapping: Dict[str, List[str]], output: Path):
 
 
 def preprocess(text: str) -> str:
-    return text.lower()
+    return text.lower().strip()
 
 
 def process_drugs_sheet(drugs: pd.DataFrame, num_synonyms: int) -> Dict[str, List[str]]:

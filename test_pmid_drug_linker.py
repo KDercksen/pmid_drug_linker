@@ -2,15 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
+from pathlib import Path
+
 from pmid_drug_linker import (
     DiffableMapping,
     csv_to_mapping,
-    load_literature_xlsx,
     drugs_to_pmids_mapping,
     load_drugs_xlsx,
+    load_literature_xlsx,
+    preprocess,
     process_drugs_sheet,
 )
-from pathlib import Path
 
 
 class TestDiffableMapping:
@@ -87,3 +89,7 @@ class TestIOFunctions:
         test_map = DiffableMapping(drugs_to_pmids_mapping(pmids, processed_drugs))
         assert all(x == [] for x in test_map.difference(expected).values())
         assert all(x == [] for x in expected.difference(test_map).values())
+
+    def test_preprocess(self):
+        assert preprocess("Gentamicin ") == "gentamicin"
+        assert preprocess("Gentamicin") == "gentamicin"
