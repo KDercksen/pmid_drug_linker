@@ -34,14 +34,14 @@ def csv_to_mapping(path: Path) -> Dict[str, List[str]]:
         for row in reader:
             drug, pmids = row
             pmids_list = pmids.split(",")
-            mapping[drug].extend(pmids_list)
+            mapping[preprocess(drug)].extend(pmids_list)
     return mapping
 
 
 def mapping_to_csv(mapping: Dict[str, List[str]], output: Path):
     # Save to CSV file, skip drugs without any PMIDs
     result = pd.DataFrame.from_records(
-        [(k, ",".join(v)) for k, v in mapping.items() if len(v) > 0]
+        [(preprocess(k), ",".join(v)) for k, v in mapping.items() if len(v) > 0]
     )
     result.to_csv(output, index=False, header=False)
 
