@@ -16,10 +16,11 @@ The tool has two main options, `create` and `update`.
 ### `create`
 This command is used to create a new dataset with pmid -> drug links. Open a
 command prompt and run the following command:
-```python
+```bash
 python pmid_drug_linker.py create
     --pmids literature.xlsx
     --relevant-drugs drugs.xlsx
+    --num-synonyms 3  # make sure this value corresponds to the number of synonyms in drugs.xlsx
     --output pmid_drug_mapping.csv
 ```
 
@@ -28,7 +29,7 @@ This command is used to generate a new dataset as well as a changelog given a
 previous dataset.  Mainly useful to e.g. update a dataset with some new
 literature or drugs, and having the difference in a separate file.
 
-```python
+```bash
 python pmid_drug_linker.py update
     --pmids literature.xlsx
     --relevant-drugs drugs.xlsx
