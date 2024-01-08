@@ -96,7 +96,7 @@ def add_base_args(parser: argparse.ArgumentParser):
     parser.add_argument(
         "--num-synonyms",
         type=int,
-        default=4,
+        required=True,
         help="Number of drug synonym columns to load from drugs sheet",
     )
 
